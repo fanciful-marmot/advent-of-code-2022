@@ -9,7 +9,7 @@ fn main() {
     let elves = read_input(filename);
 
     println!("part 1: {}", part1(&elves).unwrap());
-    // println!("part 2: {}", part2(&numbers).unwrap());
+    println!("part 2: {}", part2(&elves).unwrap());
 }
 
 fn read_input(filename: &str) -> Vec<Vec<u32>> {
@@ -42,6 +42,15 @@ fn read_input(filename: &str) -> Vec<Vec<u32>> {
 }
 
 // Finds the elf with the most calories, returns sum of calories
-fn part1(values: &Vec<Vec<u32>>) -> Option<u32> {
-    values.iter().map(|elf| elf.iter().sum()).max()
+fn part1(elves: &Vec<Vec<u32>>) -> Option<u32> {
+    elves.iter().map(|elf| elf.iter().sum()).max()
+}
+
+// Finds the sum of the top 3 elves
+fn part2(elves: &Vec<Vec<u32>>) -> Option<u32> {
+    let mut calorie_totals: Vec<u32> = elves.iter().map(|elf| elf.iter().sum()).collect();
+
+    calorie_totals.sort();
+
+    Some(calorie_totals.iter().rev().take(3).sum())
 }
