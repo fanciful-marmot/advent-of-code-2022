@@ -16,6 +16,13 @@ impl Range {
     pub fn contains(&self, other: &Range) -> bool {
         self.0 <= other.0 && other.1 <= self.1
     }
+
+    pub fn overlaps(&self, other: &Range) -> bool {
+        self.contains(other)
+            || (self.0 <= other.0 && self.1 >= other.0)
+            || (self.0 <= other.1 && self.1 >= other.1)
+            || other.contains(self)
+    }
 }
 
 fn main() {
@@ -26,7 +33,7 @@ fn main() {
     let range_pairs = read_input(filename);
 
     println!("part 1: {}", part1(&range_pairs));
-    // println!("part 2: {}", part2(&range_pairs));
+    println!("part 2: {}", part2(&range_pairs));
 }
 
 fn read_input(filename: &str) -> Vec<(Range, Range)> {
@@ -58,25 +65,15 @@ fn part1(range_pairs: &Vec<(Range, Range)>) -> u32 {
         .sum()
 }
 
-// fn part2(sacks: &Vec<Sack>) -> u32 {
-//     // Find the item shared by all elves
-//     (0..sacks.len() / 3)
-//         .into_iter()
-//         .map(|i| {
-//             // Return the badge for each group
-//             // Get the group
-//             let sack_group: Vec<&Sack> = sacks.iter().skip(i * 3).take(3).collect();
-
-//             for i in 1..53 {
-//                 if sack_group[0].contains(i)
-//                     && sack_group[1].contains(i)
-//                     && sack_group[2].contains(i)
-//                 {
-//                     return i;
-//                 }
-//             }
-
-//             0
-//         })
-//         .sum()
-// }
+fn part2(range_pairs: &Vec<(Range, Range)>) -> u32 {
+    range_pairs
+        .iter()
+        .map(|range_pair| {
+            if range_pair.0.overlaps(&range_pair.1) {
+                1
+            } else {
+                0
+            }
+        })
+        .sum()
+}
