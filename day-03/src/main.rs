@@ -24,6 +24,10 @@ impl Sack {
         }
     }
 
+    pub fn contains(&self, item: u32) -> bool {
+        self.left.contains(&item) || self.right.contains(&item)
+    }
+
     pub fn find_duplicates(&self) -> Vec<u32> {
         let num_items = self.left.len();
         let mut sorted_left = self.left.clone();
@@ -74,7 +78,7 @@ fn main() {
     let sacks = read_input(filename);
 
     println!("part 1: {}", part1(&sacks));
-    // println!("part 2: {}", part2(&sacks));
+    println!("part 2: {}", part2(&sacks));
 }
 
 fn read_input(filename: &str) -> Vec<Sack> {
@@ -83,13 +87,32 @@ fn read_input(filename: &str) -> Vec<Sack> {
     contents.lines().map(|l| Sack::from_str(l)).collect()
 }
 
-fn part1(rounds: &Vec<Sack>) -> u32 {
-    rounds
+fn part1(sacks: &Vec<Sack>) -> u32 {
+    sacks
         .iter()
         .map(|round| *round.find_duplicates().first().unwrap())
         .sum()
 }
 
-// fn part2(rounds: &Vec<Sack>) -> u32 {
-//     rounds.iter().map(|round| rps_score_part2(round)).sum()
-// }
+fn part2(sacks: &Vec<Sack>) -> u32 {
+    // Find the item shared by all elves
+    (0..sacks.len() / 3)
+        .into_iter()
+        .map(|i| {
+            // Return the badge for each group
+            // Get the group
+            let sack_group: Vec<&Sack> = sacks.iter().skip(i * 3).take(3).collect();
+
+            for i in 1..53 {
+                if sack_group[0].contains(i)
+                    && sack_group[1].contains(i)
+                    && sack_group[2].contains(i)
+                {
+                    return i;
+                }
+            }
+
+            0
+        })
+        .sum()
+}
